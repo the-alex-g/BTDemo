@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://qsntsu2gitn8"]
+
+[ext_resource type="Script" path="res://soldier/soldier.gd" id="1_s7b65"]
+[ext_resource type="PackedScene" uid="uid://duw2g25xojjyv" path="res://behavior_trees/trees/soldier_tree.tscn" id="2_ghpdc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vilh5"]
+
+[node name="Soldier" type="CharacterBody2D"]
+script = ExtResource("1_s7b65")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vilh5")
+
+[node name="BeehaveTree" parent="." instance=ExtResource("2_ghpdc")]
+actor_node_path = NodePath("..")
