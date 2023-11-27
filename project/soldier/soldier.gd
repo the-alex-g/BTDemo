@@ -37,24 +37,52 @@ func _move_towards_target_location(delta:float)->void:
 	move_and_collide(motion)
 
 
+func generate_attack()->Attack:
+	var attack := Attack.new()
+	attack.damage = stats.damage
+	return attack
+
+
+func hit_with_attack(attack:Attack)->void:
+	stats.health -= attack.damage
+	if stats.health <= 0:
+		_remove_data_from_blackboard(_behavior_tree.blackboard)
+		queue_free()
+
+
+func _remove_data_from_blackboard(blackboard:Blackboard)->void:
+	_erase_item_from_blackboard_array("units", unit_index, blackboard)
+	_erase_item_from_blackboard_array("actor_list", self, blackboard)
+
+
+func _erase_item_from_blackboard_array(array_name:String, item:Variant, blackboard:Blackboard)->void:
+	var stored : Array = blackboard.get_value(array_name, [], GLOBAL_BLACKBOARD_NAME)
+	stored.erase(item)
+	blackboard.set_value(array_name, stored, GLOBAL_BLACKBOARD_NAME)
+
+
 func set_config(new_config:SoldierConfig)->void:
 	stats = new_config.soldier_stats
 
 
 func set_behavior_tree_blackboard(blackboard:Blackboard)->void:
 	_behavior_tree.blackboard = blackboard
-	unit_index = blackboard.get_value("units", [], GLOBAL_BLACKBOARD_NAME).size()
+	unit_index = blackboard.get_value("unit_counter", 0, GLOBAL_BLACKBOARD_NAME)
 	
-	var unit_array : Array = blackboard.get_value("units", [], GLOBAL_BLACKBOARD_NAME)
-	unit_array.append(unit_index)
-	
+	_increment_blackboard_int("unit_counter", blackboard)
+	_append_item_to_blackboard_array("units", unit_index, blackboard)
+	_append_item_to_blackboard_array("actor_list", self, blackboard)
+
+
+func _increment_blackboard_int(field_name:String, blackboard:Blackboard)->void:
 	blackboard.set_value(
-		"units",
-		unit_array,
+		field_name,
+		blackboard.get_value(field_name, 0, GLOBAL_BLACKBOARD_NAME) + 1,
 		GLOBAL_BLACKBOARD_NAME
 	)
-	blackboard.set_value("actor", self, str(unit_index))
 
 
-func remove_data_from_blackboard(blackboard:Blackboard)->void:
-	pass
+func _append_item_to_blackboard_array(array_name:String, item:Variant, blackboard:Blackboard)->void:
+	var stored : Array = blackboard.get_value(array_name, [], GLOBAL_BLACKBOARD_NAME)
+	stored.append(item)
+	blackboard.set_value(array_name, stored, GLOBAL_BLACKBOARD_NAME)

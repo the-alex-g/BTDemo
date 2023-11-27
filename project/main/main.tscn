@@ -5,32 +5,32 @@
 [ext_resource type="Script" path="res://soldier/soldier_config.gd" id="2_jamke"]
 [ext_resource type="Script" path="res://addons/beehave/blackboard.gd" id="4_6qy0m"]
 
-[sub_resource type="Resource" id="Resource_qp0j7"]
+[sub_resource type="Resource" id="Resource_sjmtq"]
 script = ExtResource("2_jamke")
 target_enemies = true
 target_allies = false
 attack_type = 0
 target_type = 0
 target_distance = 0
-attack_range = 10.0
+attack_range = 100.0
 
-[sub_resource type="Resource" id="Resource_778yn"]
-script = ExtResource("2_jamke")
-target_enemies = false
-target_allies = true
-attack_type = 0
-target_type = 3
-target_distance = 0
-attack_range = 10.0
-
-[sub_resource type="Resource" id="Resource_r4jf1"]
+[sub_resource type="Resource" id="Resource_ttgdl"]
 script = ExtResource("2_jamke")
 target_enemies = true
 target_allies = false
 attack_type = 0
 target_type = 0
 target_distance = 0
-attack_range = 10.0
+attack_range = 100.0
+
+[sub_resource type="Resource" id="Resource_74ddb"]
+script = ExtResource("2_jamke")
+target_enemies = true
+target_allies = false
+attack_type = 0
+target_type = 0
+target_distance = 0
+attack_range = 100.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_yx2gc")
@@ -39,16 +39,16 @@ script = ExtResource("1_yx2gc")
 
 [node name="Soldier" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
 position = Vector2(147, 209)
-config = SubResource("Resource_qp0j7")
+config = SubResource("Resource_sjmtq")
 
 [node name="Soldier2" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
 position = Vector2(418, 177)
-config = SubResource("Resource_778yn")
+config = SubResource("Resource_ttgdl")
 team_index = 1
 
 [node name="Soldier3" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
 position = Vector2(724, 254)
-config = SubResource("Resource_r4jf1")
+config = SubResource("Resource_74ddb")
 team_index = 1
 
 [node name="Blackboard" type="Node" parent="."]

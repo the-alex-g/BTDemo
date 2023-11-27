@@ -4,7 +4,6 @@ const MAX_TARGETS := 10
 
 
 func tick(actor:Node, blackboard:Blackboard)->int:
-	_update_actor_list(blackboard, actor.GLOBAL_BLACKBOARD_NAME)
 	blackboard.set_value("target", _get_target(
 		actor,
 		_get_possible_targets(actor, blackboard.get_value("actor_list", [], actor.GLOBAL_BLACKBOARD_NAME))
@@ -13,16 +12,6 @@ func tick(actor:Node, blackboard:Blackboard)->int:
 	if is_instance_valid(blackboard.get_value("target", null, str(actor.unit_index))):
 		return SUCCESS
 	return FAILURE
-
-
-func _update_actor_list(blackboard:Blackboard, global_blackboard_name)->void:
-	var engine_process_frames := Engine.get_process_frames()
-	if blackboard.get_value("last_frame_when_actor_list_updated", 0, global_blackboard_name) != engine_process_frames:
-		var actor_list := []
-		for i in blackboard.get_value("units", [], global_blackboard_name):
-			actor_list.append(blackboard.get_value("actor", null, str(i)))
-		blackboard.set_value("actor_list", actor_list, global_blackboard_name)
-		blackboard.set_value("last_frame_when_actor_list_updated", engine_process_frames, global_blackboard_name)
 
 
 func _get_target(actor:Soldier, possible_targets:Array)->Node2D:
@@ -64,7 +53,7 @@ func _get_possible_targets(actor:Soldier, target_list:Array)->Array:
 func _limit_targets_by_team(actor:Soldier, possible_targets:Array)->Array:
 	var trimmed_targets : Array = []
 	for target in possible_targets:
-		if target != actor:
+		if is_instance_valid(target) and target != actor:
 			if target.team_index == actor.team_index and actor.config.target_allies:
 				trimmed_targets.append(target)
 			if target.team_index != actor.team_index and actor.config.target_enemies:

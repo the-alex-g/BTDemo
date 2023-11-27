@@ -17,4 +17,4 @@ enum TargetDistance {CLOSE, FAR}
 @export var target_type := TargetType.NO_PREFERENCE
 @export var target_distance := TargetDistance.CLOSE
 @export var soldier_stats := SoldierStats.new(5, 20)
-@export var attack_range := 10.0
+@export var attack_range := 100.0
