@@ -1,20 +1,25 @@
 class_name Soldier
 extends CharacterBody2D
 
-const DISTANCE_BUFFER := 1.0
+const DISTANCE_BUFFER := 2.0
 const GLOBAL_BLACKBOARD_NAME := "global"
 const ATTACK_COOLDOWN_VARIANCE_PERCENTAGE := 0.25
 
-@export var config := SoldierConfig.new() : set = set_config
+@export var config : SoldierConfig
 @export var team_index := 0
 
-var stats : SoldierStats
 var target_location : Vector2
 var unit_index := -1
 var can_attack := true
 
 @onready var _behavior_tree : BeehaveTree = $BeehaveTree
 @onready var _attack_cooldown_timer : Timer = $AttackCooldownTimer
+
+
+func _ready()->void:
+	if config == null:
+		print(name, " doesn't have a config!")
+		config = SoldierConfig.new()
 
 
 func _physics_process(delta:float)->void:
@@ -36,28 +41,44 @@ func _is_at_target()->bool:
 
 func _move_towards_target_location(delta:float)->void:
 	var angle := get_angle_to(target_location)
-	var motion := Vector2.RIGHT.rotated(angle) * delta * stats.speed
+	var motion := Vector2.RIGHT.rotated(angle) * delta * config.speed
 	move_and_collide(motion)
 
 
-func generate_attack()->Attack:
-	var attack := Attack.new()
-	attack.damage = stats.damage
+func attack()->Attack:
+	_start_attack_cooldown()
+	return _generate_attack()
+
+
+func _start_attack_cooldown()->void:
 	can_attack = false
 	_attack_cooldown_timer.start(_get_attack_cooldown_time())
-	return attack
 
 
 func _get_attack_cooldown_time()->float:
-	var cooldown_time := config.attack_cooldown_time
-	return cooldown_time + randf_range(-cooldown_time, cooldown_time) * ATTACK_COOLDOWN_VARIANCE_PERCENTAGE
+	return config.attack_cooldown_time + randf_range(-config.cooldown_time_variance, config.cooldown_time_variance)
 
 
-func hit_with_attack(attack:Attack)->void:
-	stats.health -= attack.damage
-	if stats.health <= 0:
-		_remove_data_from_blackboard(_behavior_tree.blackboard)
-		queue_free()
+func _generate_attack()->Attack:
+	var new_attack := Attack.new()
+	new_attack.damage = _get_attack_damage()
+	return new_attack
+
+
+func _get_attack_damage()->int:
+	return config.damage + randi_range(-config.damage_variance, config.damage_variance)
+
+
+func hit_with_attack(incoming_attack:Attack)->void:
+	config.health -= incoming_attack.damage
+	print("Ouch! ", name, " only has ", config.health, " health left!")
+	if config.health <= 0:
+		_die()
+
+
+func _die()->void:
+	_remove_data_from_blackboard(_behavior_tree.blackboard)
+	queue_free()
 
 
 func _remove_data_from_blackboard(blackboard:Blackboard)->void:
@@ -69,10 +90,6 @@ func _erase_item_from_blackboard_array(array_name:String, item:Variant, blackboa
 	var stored : Array = blackboard.get_value(array_name, [], GLOBAL_BLACKBOARD_NAME)
 	stored.erase(item)
 	blackboard.set_value(array_name, stored, GLOBAL_BLACKBOARD_NAME)
-
-
-func set_config(new_config:SoldierConfig)->void:
-	stats = new_config.soldier_stats
 
 
 func set_behavior_tree_blackboard(blackboard:Blackboard)->void:
