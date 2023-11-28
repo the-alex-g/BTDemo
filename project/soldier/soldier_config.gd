@@ -19,15 +19,26 @@ enum TargetDistance {CLOSE, FAR}
 @export_category("Attacking")
 @export var attack_type := AttackType.MELEE
 @export var attack_range := 100.0
-@export_group("cooldown")
+@export_group("Cooldown")
 @export var attack_cooldown_time := 1.0
 @export var cooldown_time_variance := 0.25 : get = _get_cooldown_time_variance
-@export_group("damage")
+@export_group("Damage")
 @export var damage := 5
 @export var damage_variance := 1 : get = _get_damage_variance
 @export_category("Stats")
 @export var health := 20 : set = _set_health
 @export var speed := 150.0
+@export_category("Animation")
+@export var frame_size := Vector2(16, 16)
+@export_group("Attack")
+@export var attack_sprite_sheet : Texture2D
+@export var attack_frames_per_second := 5
+@export_group("Idle")
+@export var idle_sprite_sheet : Texture2D
+@export var idle_frames_per_second := 5
+@export_group("Walk")
+@export var walk_sprite_sheet : Texture2D
+@export var walk_frames_per_second := 5
 
 var max_health := 0
 

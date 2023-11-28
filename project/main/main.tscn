@@ -1,11 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://bj7jphwpqxudx"]
+[gd_scene load_steps=7 format=3 uid="uid://bj7jphwpqxudx"]
 
 [ext_resource type="PackedScene" uid="uid://qsntsu2gitn8" path="res://soldier/soldier.tscn" id="1_qki3t"]
 [ext_resource type="Script" path="res://main/main.gd" id="1_yx2gc"]
 [ext_resource type="Script" path="res://soldier/soldier_config.gd" id="2_jamke"]
 [ext_resource type="Script" path="res://addons/beehave/blackboard.gd" id="4_6qy0m"]
+[ext_resource type="Texture2D" uid="uid://eses36jhahi7" path="res://soldier/test.png" id="4_qm54r"]
 
-[sub_resource type="Resource" id="Resource_nd7fo"]
+[sub_resource type="Resource" id="Resource_qfow7"]
 script = ExtResource("2_jamke")
 target_enemies = true
 target_allies = false
@@ -19,36 +20,11 @@ damage = 5
 damage_variance = 1
 health = 20
 speed = 150.0
-
-[sub_resource type="Resource" id="Resource_ttgdl"]
-script = ExtResource("2_jamke")
-target_enemies = true
-target_allies = false
-target_type = 0
-target_distance = 0
-attack_type = 0
-attack_range = 100.0
-attack_cooldown_time = 1.0
-cooldown_time_variance = 0.25
-damage = 5
-damage_variance = 1
-health = 20
-speed = 150.0
-
-[sub_resource type="Resource" id="Resource_74ddb"]
-script = ExtResource("2_jamke")
-target_enemies = true
-target_allies = false
-target_type = 0
-target_distance = 0
-attack_type = 0
-attack_range = 100.0
-attack_cooldown_time = 1.0
-cooldown_time_variance = 0.25
-damage = 5
-damage_variance = 1
-health = 20
-speed = 150.0
+frame_size = Vector2(16, 16)
+attack_frames_per_second = 5
+idle_sprite_sheet = ExtResource("4_qm54r")
+idle_frames_per_second = 5
+walk_frames_per_second = 5
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_yx2gc")
@@ -57,17 +33,7 @@ script = ExtResource("1_yx2gc")
 
 [node name="Soldier" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
 position = Vector2(147, 209)
-config = SubResource("Resource_nd7fo")
-
-[node name="Soldier2" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
-position = Vector2(418, 177)
-config = SubResource("Resource_ttgdl")
-team_index = 1
-
-[node name="Soldier3" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
-position = Vector2(724, 254)
-config = SubResource("Resource_74ddb")
-team_index = 1
+config = SubResource("Resource_qfow7")
 
 [node name="Blackboard" type="Node" parent="."]
 script = ExtResource("4_6qy0m")

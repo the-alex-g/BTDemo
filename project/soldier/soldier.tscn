@@ -17,4 +17,6 @@ actor_node_path = NodePath("..")
 [node name="AttackCooldownTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

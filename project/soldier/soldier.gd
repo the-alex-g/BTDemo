@@ -14,12 +14,16 @@ var can_attack := true
 
 @onready var _behavior_tree : BeehaveTree = $BeehaveTree
 @onready var _attack_cooldown_timer : Timer = $AttackCooldownTimer
+@onready var _sprite : AnimatedSprite2D = $AnimatedSprite2D
 
 
 func _ready()->void:
 	if config == null:
 		print(name, " doesn't have a config!")
 		config = SoldierConfig.new()
+	
+	_sprite.sprite_frames = _add_animation_to_sprite_frames("idle", SpriteFrames.new())
+	_sprite.play("idle")
 
 
 func _physics_process(delta:float)->void:
@@ -117,3 +121,36 @@ func _append_item_to_blackboard_array(array_name:String, item:Variant, blackboar
 
 func _on_attack_cooldown_timer_timeout()->void:
 	can_attack = true
+
+
+func _add_animation_to_sprite_frames(animation_name:String, sprite_frames:SpriteFrames)->SpriteFrames:
+	sprite_frames.add_animation(animation_name)
+	sprite_frames.set_animation_speed(animation_name, _get_animation_speed(animation_name))
+	
+	var animation_texture := _get_animation_texture(animation_name)
+	var v_frames : int = floor(animation_texture.get_height() / config.frame_size.y)
+	var h_frames : int = floor(animation_texture.get_width() / config.frame_size.x)
+	
+	for y in v_frames:
+		for x in h_frames:
+			sprite_frames.add_frame(animation_name, _generate_frame_texture(x, y, animation_texture))
+	
+	return sprite_frames
+
+
+func _get_animation_speed(animation_name:String)->float:
+	return config.get(animation_name + "_frames_per_second")
+
+
+func _get_animation_texture(animation_name:String)->Texture2D:
+	return config.get(animation_name + "_sprite_sheet")
+
+
+func _generate_frame_texture(x:int, y:int, texture:Texture2D)->AtlasTexture:
+	var frame_texture := AtlasTexture.new()
+	frame_texture.atlas = texture
+	frame_texture.region = Rect2(
+		config.frame_size * Vector2(x, y),
+		config.frame_size
+	)
+	return frame_texture
