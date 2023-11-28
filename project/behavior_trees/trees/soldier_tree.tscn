@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://duw2g25xojjyv"]
+[gd_scene load_steps=10 format=3 uid="uid://duw2g25xojjyv"]
 
 [ext_resource type="Script" path="res://addons/beehave/nodes/beehave_tree.gd" id="1_5nxr1"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_wnh83"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://behavior_trees/conditions/is_target_in_range.gd" id="6_fe3s8"]
 [ext_resource type="Script" path="res://behavior_trees/actions/set_target_position.gd" id="7_nf4e5"]
 [ext_resource type="Script" path="res://behavior_trees/actions/attack_target.gd" id="8_jnk7y"]
+[ext_resource type="Script" path="res://behavior_trees/conditions/can_attack.gd" id="8_ks5qv"]
 
 [node name="BeehaveTree" type="Node"]
 script = ExtResource("1_5nxr1")
@@ -35,6 +36,9 @@ script = ExtResource("2_wnh83")
 
 [node name="IsTargetInRange" type="Node" parent="Sequence/Sequence"]
 script = ExtResource("6_fe3s8")
+
+[node name="CanAttack" type="Node" parent="Sequence/Sequence"]
+script = ExtResource("8_ks5qv")
 
 [node name="AttackTarget" type="Node" parent="Sequence/Sequence"]
 script = ExtResource("8_jnk7y")

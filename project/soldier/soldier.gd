@@ -3,6 +3,7 @@ extends CharacterBody2D
 
 const DISTANCE_BUFFER := 1.0
 const GLOBAL_BLACKBOARD_NAME := "global"
+const ATTACK_COOLDOWN_VARIANCE_PERCENTAGE := 0.25
 
 @export var config := SoldierConfig.new() : set = set_config
 @export var team_index := 0
@@ -10,8 +11,10 @@ const GLOBAL_BLACKBOARD_NAME := "global"
 var stats : SoldierStats
 var target_location : Vector2
 var unit_index := -1
+var can_attack := true
 
 @onready var _behavior_tree : BeehaveTree = $BeehaveTree
+@onready var _attack_cooldown_timer : Timer = $AttackCooldownTimer
 
 
 func _physics_process(delta:float)->void:
@@ -40,7 +43,14 @@ func _move_towards_target_location(delta:float)->void:
 func generate_attack()->Attack:
 	var attack := Attack.new()
 	attack.damage = stats.damage
+	can_attack = false
+	_attack_cooldown_timer.start(_get_attack_cooldown_time())
 	return attack
+
+
+func _get_attack_cooldown_time()->float:
+	var cooldown_time := config.attack_cooldown_time
+	return cooldown_time + randf_range(-cooldown_time, cooldown_time) * ATTACK_COOLDOWN_VARIANCE_PERCENTAGE
 
 
 func hit_with_attack(attack:Attack)->void:
@@ -86,3 +96,7 @@ func _append_item_to_blackboard_array(array_name:String, item:Variant, blackboar
 	var stored : Array = blackboard.get_value(array_name, [], GLOBAL_BLACKBOARD_NAME)
 	stored.append(item)
 	blackboard.set_value(array_name, stored, GLOBAL_BLACKBOARD_NAME)
+
+
+func _on_attack_cooldown_timer_timeout()->void:
+	can_attack = true
