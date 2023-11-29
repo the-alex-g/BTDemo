@@ -1,6 +1,8 @@
 class_name Soldier
 extends CharacterBody2D
 
+signal died(soldier)
+
 const DISTANCE_BUFFER := 2.0
 const GLOBAL_BLACKBOARD_NAME := "global"
 const ATTACK_COOLDOWN_VARIANCE_PERCENTAGE := 0.25
@@ -28,6 +30,9 @@ func _ready()->void:
 	_sprite.play("idle")
 	
 	_has_been_added_to_tree = true
+	
+	if team_index == 1:
+		modulate = Color.RED
 
 
 func _physics_process(delta:float)->void:
@@ -89,13 +94,13 @@ func hit_with_attack(incoming_attack:Attack)->void:
 
 func damage(amount:int)->void:
 	config.health -= amount
-	print("Ouch! ", name, " only has ", config.health, " health left!")
 	if config.health <= 0:
 		_die()
 
 
 func _die()->void:
 	_remove_data_from_blackboard(_behavior_tree.blackboard)
+	died.emit(self)
 	queue_free()
 
 

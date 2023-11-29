@@ -7,14 +7,14 @@
 [node name="Main" type="Node2D"]
 script = ExtResource("1_yx2gc")
 
-[node name="SoldierPlacementInterface" parent="." instance=ExtResource("3_2ct6o")]
-offset_right = 1024.0
-offset_bottom = 600.0
+[node name="Blackboard" type="Node" parent="."]
+script = ExtResource("4_6qy0m")
 
 [node name="SoldierContainer" type="Node2D" parent="."]
 
-[node name="Blackboard" type="Node" parent="."]
-script = ExtResource("4_6qy0m")
+[node name="SoldierPlacementInterface" parent="." instance=ExtResource("3_2ct6o")]
+offset_right = 1024.0
+offset_bottom = 600.0
 
 [connection signal="battle_started" from="SoldierPlacementInterface" to="." method="_on_soldier_placement_interface_battle_started"]
 [connection signal="soldier_instance_requested" from="SoldierPlacementInterface" to="." method="_on_soldier_placement_interface_soldier_instance_requested"]
