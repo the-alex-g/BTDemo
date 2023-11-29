@@ -1,3 +1,4 @@
+@icon("res://resources/icons/status_effect.png")
 class_name StatusEffect
 extends Node
 

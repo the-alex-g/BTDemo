@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SoldierConfig" load_steps=3 format=3 uid="uid://dewrcabjlkfkm"]
 
-[ext_resource type="Script" path="res://soldier/soldier_config.gd" id="1_edh67"]
+[ext_resource type="Script" path="res://resources/soldier_config.gd" id="1_edh67"]
 [ext_resource type="Texture2D" uid="uid://eses36jhahi7" path="res://soldier/test.png" id="1_fqlfb"]
 
 [resource]

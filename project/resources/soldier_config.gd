@@ -1,3 +1,4 @@
+@icon("res://resources/icons/soldier_config.png")
 class_name SoldierConfig
 extends Resource
 
