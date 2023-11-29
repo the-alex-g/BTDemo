@@ -7,6 +7,8 @@ const SOLDIER_CONFIG_FOLDER_PATH := "res://soldier/soldier_configs/"
 
 var _selected_soldier_config : SoldierConfig
 var _is_mouse_in_legal_placement_area := false
+var _soldiers_placed : Array = []
+var _battle_started := false
 
 @onready var _placement_button_container : HBoxContainer = $ScrollContainer/PlacementButtonContainer
 
@@ -32,6 +34,10 @@ func _add_soldier_at_mouse()->void:
 		soldier.config = _selected_soldier_config
 		soldier.position = get_global_mouse_position()
 		soldier_instance_requested.emit(soldier)
+		
+		_soldiers_placed.append(
+			{"config":_selected_soldier_config, "position":get_global_mouse_position()}
+		)
 
 
 func _clear_soldier_config_selection()->void:
