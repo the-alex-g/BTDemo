@@ -66,6 +66,7 @@ func _get_attack_cooldown_time()->float:
 func _generate_attack()->Attack:
 	var new_attack := Attack.new()
 	new_attack.damage = _get_attack_damage()
+	new_attack.statuses = config.get_attack_statuses()
 	return new_attack
 
 
@@ -74,7 +75,13 @@ func _get_attack_damage()->int:
 
 
 func hit_with_attack(incoming_attack:Attack)->void:
-	config.health -= incoming_attack.damage
+	damage(incoming_attack.damage)
+	for status in incoming_attack.statuses:
+		apply_status(status)
+
+
+func damage(amount:int)->void:
+	config.health -= amount
 	print("Ouch! ", name, " only has ", config.health, " health left!")
 	if config.health <= 0:
 		_die()
@@ -94,6 +101,11 @@ func _erase_item_from_blackboard_array(array_name:String, item:Variant, blackboa
 	var stored : Array = blackboard.get_value(array_name, [], GLOBAL_BLACKBOARD_NAME)
 	stored.erase(item)
 	blackboard.set_value(array_name, stored, GLOBAL_BLACKBOARD_NAME)
+
+
+func apply_status(status:StatusEffect)->void:
+	if not config.is_immune_to(status):
+		add_child(status)
 
 
 func set_behavior_tree_blackboard(blackboard:Blackboard)->void:

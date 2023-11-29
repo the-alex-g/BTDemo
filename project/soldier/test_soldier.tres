@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="SoldierConfig" load_steps=3 format=3 uid="uid://dewrcabjlkfkm"]
+
+[ext_resource type="Script" path="res://soldier/soldier_config.gd" id="1_edh67"]
+[ext_resource type="Texture2D" uid="uid://eses36jhahi7" path="res://soldier/test.png" id="1_fqlfb"]
+
+[resource]
+script = ExtResource("1_edh67")
+target_enemies = true
+target_allies = false
+target_type = 0
+target_distance = 0
+attack_type = 0
+attack_range = 100.0
+attack_statuses = Array[int]([1])
+attack_cooldown_time = 1.0
+cooldown_time_variance = 0.25
+damage = 5
+damage_variance = 1
+health = 20
+speed = 150.0
+status_immunities = Array[int]([1])
+frame_size = Vector2(16, 16)
+attack_frames_per_second = 5
+idle_sprite_sheet = ExtResource("1_fqlfb")
+idle_frames_per_second = 5
+walk_frames_per_second = 5
