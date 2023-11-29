@@ -22,7 +22,7 @@ func _input(event:InputEvent)->void:
 		if event.pressed:
 			match event.button_index:
 				MOUSE_BUTTON_LEFT:
-					if _is_mouse_in_legal_placement_area:
+					if _is_mouse_in_legal_placement_area and not _battle_started:
 						_add_soldier_at_mouse()
 				MOUSE_BUTTON_RIGHT:
 					_clear_soldier_config_selection()
@@ -84,6 +84,7 @@ func _on_placement_button_pressed(config:SoldierConfig)->void:
 
 func _on_start_battle_button_pressed()->void:
 	battle_started.emit()
+	_battle_started = true
 
 
 func _on_legal_placement_area_mouse_entered():
