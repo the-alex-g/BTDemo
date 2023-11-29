@@ -15,14 +15,15 @@ func tick(actor:Node, blackboard:Blackboard)->int:
 
 
 func _get_target(actor:Soldier, possible_targets:Array)->Node2D:
-	possible_targets.sort_custom(_get_priority_sorting_function(actor))
 	if possible_targets.size() > 0:
-		return possible_targets.front()
+		possible_targets.sort_custom(_get_priority_sorting_function(actor))
+		return possible_targets[0]
 	return null
 
 
 func _get_priority_sorting_function(actor:Soldier)->Callable:
-	var function := func(_a, _b): return true
+	var function := func(_a, _b):
+		return true
 	
 	match actor.config.target_type:
 		SoldierConfig.TargetType.LOW_HEALTH:
@@ -46,7 +47,7 @@ func _get_priority_sorting_function(actor:Soldier)->Callable:
 
 func _get_possible_targets(actor:Soldier, target_list:Array)->Array:
 	var possible_targets : Array = _limit_targets_by_team(actor, target_list)
-	target_list.sort_custom(_get_distance_sorting_function(actor))
+	possible_targets.sort_custom(_get_distance_sorting_function(actor))
 	return possible_targets.slice(0, MAX_TARGETS)
 
 
@@ -67,10 +68,10 @@ func _get_distance_sorting_function(actor:Soldier)->Callable:
 	match actor.config.target_distance:
 		SoldierConfig.TargetDistance.CLOSE:
 			function = func(a:Node2D, b:Node2D):
-				return _get_distance_squared_between(actor, a) < _get_distance_squared_between(actor, b)
+				return _get_distance_squared_between(actor, a) > _get_distance_squared_between(actor, b)
 		SoldierConfig.TargetDistance.FAR:
 			function = func(a:Node2D, b:Node2D):
-				return _get_distance_squared_between(actor, a) > _get_distance_squared_between(actor, b)
+				return _get_distance_squared_between(actor, a) < _get_distance_squared_between(actor, b)
 	return function
 
 
