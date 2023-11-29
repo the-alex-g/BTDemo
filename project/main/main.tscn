@@ -1,22 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://bj7jphwpqxudx"]
+[gd_scene load_steps=4 format=3 uid="uid://bj7jphwpqxudx"]
 
-[ext_resource type="PackedScene" uid="uid://qsntsu2gitn8" path="res://soldier/soldier.tscn" id="1_qki3t"]
 [ext_resource type="Script" path="res://main/main.gd" id="1_yx2gc"]
-[ext_resource type="Resource" uid="uid://dewrcabjlkfkm" path="res://soldier/test_soldier.tres" id="3_k4kor"]
+[ext_resource type="PackedScene" uid="uid://d3vl86gtvsyfr" path="res://main/soldier_placement/soldier_placement_interface.tscn" id="3_2ct6o"]
 [ext_resource type="Script" path="res://addons/beehave/blackboard.gd" id="4_6qy0m"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_yx2gc")
 
+[node name="SoldierPlacementInterface" parent="." instance=ExtResource("3_2ct6o")]
+offset_right = 1024.0
+offset_bottom = 600.0
+
 [node name="SoldierContainer" type="Node2D" parent="."]
-
-[node name="Soldier" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
-config = ExtResource("3_k4kor")
-
-[node name="Soldier2" parent="SoldierContainer" instance=ExtResource("1_qki3t")]
-position = Vector2(208, 198)
-config = ExtResource("3_k4kor")
-team_index = 1
 
 [node name="Blackboard" type="Node" parent="."]
 script = ExtResource("4_6qy0m")
+
+[connection signal="battle_started" from="SoldierPlacementInterface" to="." method="_on_soldier_placement_interface_battle_started"]
+[connection signal="soldier_instance_requested" from="SoldierPlacementInterface" to="." method="_on_soldier_placement_interface_soldier_instance_requested"]

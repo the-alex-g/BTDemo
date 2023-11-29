@@ -11,6 +11,8 @@ const ATTACK_COOLDOWN_VARIANCE_PERCENTAGE := 0.25
 var target_location : Vector2
 var unit_index := -1
 var can_attack := true
+var disabled := false : set = _set_disabled
+var _has_been_added_to_tree := false
 
 @onready var _behavior_tree : BeehaveTree = $BeehaveTree
 @onready var _attack_cooldown_timer : Timer = $AttackCooldownTimer
@@ -24,9 +26,14 @@ func _ready()->void:
 	
 	_sprite.sprite_frames = _add_animation_to_sprite_frames("idle", SpriteFrames.new())
 	_sprite.play("idle")
+	
+	_has_been_added_to_tree = true
 
 
 func _physics_process(delta:float)->void:
+	if disabled:
+		return
+	
 	if _can_move() and not _is_at_target():
 		_move_towards_target_location(delta)
 
@@ -109,12 +116,15 @@ func apply_status(status:StatusEffect)->void:
 
 
 func set_behavior_tree_blackboard(blackboard:Blackboard)->void:
-	_behavior_tree.blackboard = blackboard
 	unit_index = blackboard.get_value("unit_counter", 0, GLOBAL_BLACKBOARD_NAME)
 	
 	_increment_blackboard_int("unit_counter", blackboard)
 	_append_item_to_blackboard_array("units", unit_index, blackboard)
 	_append_item_to_blackboard_array("actor_list", self, blackboard)
+	
+	if not _has_been_added_to_tree:
+		await ready
+	_behavior_tree.blackboard = blackboard
 
 
 func _increment_blackboard_int(field_name:String, blackboard:Blackboard)->void:
@@ -166,3 +176,10 @@ func _generate_frame_texture(x:int, y:int, texture:Texture2D)->AtlasTexture:
 		config.frame_size
 	)
 	return frame_texture
+
+
+func _set_disabled(value:bool)->void:
+	disabled = value
+	if not _has_been_added_to_tree:
+		await ready
+	_behavior_tree.enabled = not disabled

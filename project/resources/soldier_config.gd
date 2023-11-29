@@ -12,6 +12,9 @@ enum TargetType {
 }
 enum TargetDistance {CLOSE, FAR}
 
+@export_category("Name")
+@export var soldier_name := ""
+@export var soldier_icon : Texture2D
 @export_category("Targeting")
 @export var target_enemies := true
 @export var target_allies := false

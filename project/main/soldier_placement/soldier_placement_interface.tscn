@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3vl86gtvsyfr"]
+
+[ext_resource type="Script" path="res://main/soldier_placement/soldier_placement_interface.gd" id="1_n1i0m"]
+[ext_resource type="Texture2D" uid="uid://dwbrhndyppqu7" path="res://resources/icons/soldier_config.png" id="2_48kor"]
+
+[node name="SoldierPlacementInterface" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n1i0m")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PlacementButtonContainer" type="HBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="ScrollContainer/PlacementButtonContainer"]
+layout_mode = 2
+tooltip_text = "Here's a tooltip. Have \"fun\"!"
+texture_normal = ExtResource("2_48kor")
+
+[node name="StartBattleButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 101.0
+offset_bottom = 36.0
+text = "Start Battle"
+
+[node name="LegalPlacementArea" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 44.0
+offset_right = 511.0
+offset_bottom = 570.0
+
+[connection signal="pressed" from="StartBattleButton" to="." method="_on_start_battle_button_pressed"]
+[connection signal="mouse_entered" from="LegalPlacementArea" to="." method="_on_legal_placement_area_mouse_entered"]
+[connection signal="mouse_exited" from="LegalPlacementArea" to="." method="_on_legal_placement_area_mouse_exited"]
