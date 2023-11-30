@@ -34,17 +34,8 @@ enum TargetDistance {CLOSE, FAR}
 @export var health := 20 : set = _set_health
 @export var speed := 150.0
 @export var status_immunities : Array[StatusEffect.StatusType] = []
-@export_category("Animation")
-@export var frame_size := Vector2(16, 16)
-@export_group("Attack")
-@export var attack_sprite_sheet : Texture2D
-@export var attack_frames_per_second := 5
-@export_group("Idle")
-@export var idle_sprite_sheet : Texture2D
-@export var idle_frames_per_second := 5
-@export_group("Walk")
-@export var walk_sprite_sheet : Texture2D
-@export var walk_frames_per_second := 5
+@export_category("Animations")
+@export var animations : SoldierAnimations
 
 var max_health := 0
 

@@ -1,8 +1,17 @@
-[gd_resource type="Resource" script_class="SoldierConfig" load_steps=4 format=3 uid="uid://dewrcabjlkfkm"]
+[gd_resource type="Resource" script_class="SoldierConfig" load_steps=6 format=3 uid="uid://dewrcabjlkfkm"]
 
 [ext_resource type="Script" path="res://resources/soldier_config.gd" id="1_edh67"]
 [ext_resource type="Texture2D" uid="uid://eses36jhahi7" path="res://soldier/test.png" id="1_fqlfb"]
+[ext_resource type="Script" path="res://resources/soldier_animations.gd" id="2_4ubj4"]
 [ext_resource type="Texture2D" uid="uid://dwbrhndyppqu7" path="res://resources/icons/soldier_config.png" id="3_tuo6v"]
+
+[sub_resource type="Resource" id="Resource_8c6os"]
+script = ExtResource("2_4ubj4")
+frame_size = Vector2(16, 16)
+attack_frames_per_second = 5
+idle_sprite_sheet = ExtResource("1_fqlfb")
+idle_frames_per_second = 5
+walk_frames_per_second = 5
 
 [resource]
 script = ExtResource("1_edh67")
@@ -22,8 +31,4 @@ damage_variance = 1
 health = 20
 speed = 150.0
 status_immunities = Array[int]([1])
-frame_size = Vector2(16, 16)
-attack_frames_per_second = 5
-idle_sprite_sheet = ExtResource("1_fqlfb")
-idle_frames_per_second = 5
-walk_frames_per_second = 5
+animations = SubResource("Resource_8c6os")
