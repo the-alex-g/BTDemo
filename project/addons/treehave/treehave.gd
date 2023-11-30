@@ -15,6 +15,7 @@ const BEEHAVE_NODES_TO_EXCLUDE := [
 	"res://addons/beehave/nodes/composites/composite.gd",
 	"res://addons/beehave/nodes/beehave_node.gd",
 ]
+const REPARENT_DISTANCE := 100.0
 
 var editor_interface: EditorInterface
 var selected_tree_node: Node
@@ -140,6 +141,7 @@ func _on_add_node_menu_index_pressed(index: int, menu: PopupMenu) -> void:
 		_set_node_owner(parent_node)
 	else:
 		_add_name_safe_child(selected_tree_node, new_tree_node)
+		
 	new_tree_node.owner = _current_behavior_tree
 
 	_build_graph_node(new_tree_node)
@@ -155,7 +157,7 @@ func _add_name_safe_child(parent:Node, child:Node)->void:
 
 
 func _make_name_safe(node_name:String, parent:Node)->String:
-	node_name = node_name.replace(" ", "")
+	node_name = node_name.replace(" ", "").rstrip("0123456789")
 	
 	var number_of_nodes_that_match_child_name := 0
 	for node in parent.get_children():
@@ -180,6 +182,10 @@ func _get_name_from_path(path: String) -> String:
 
 func set_tree(tree: BeehaveTree) -> void:
 	_current_behavior_tree = tree
+	_rebuild_tree_graph()
+
+
+func _rebuild_tree_graph()->void:
 	_clear_current_graph()
 	_build_current_tree_graph()
 	_arrange_current_tree_graph()
@@ -201,7 +207,7 @@ func _clear_current_graph() -> void:
 
 
 func get_graph_node(node: Node) -> GraphNode:
-	if node is Decorator and node.get_child_count() > 0:
+	while node is Decorator and node.get_child_count() > 0:
 		node = node.get_child(0)
 
 	return _node_graph_node_map.get(node)
@@ -214,7 +220,8 @@ func get_tree_node(graph_node: GraphNode) -> Node:
 func _build_current_tree_graph() -> void:
 	# Translates the beehave tree represented by _current_behavior_tree into a graph.
 	_create_graph_node(_current_behavior_tree)
-	_build_graph_node(_current_behavior_tree.get_child(0))
+	for root in _current_behavior_tree.get_children():
+		_build_graph_node(root)
 
 
 func _build_graph_node(node: Node) -> void:
@@ -233,7 +240,7 @@ func _build_graph_node(node: Node) -> void:
 
 	var graph_node := _create_graph_node(node, decorators)
 	var parent_graph_node := get_graph_node(parent_node)
-
+	
 	_graph_edit.connect_node(parent_graph_node.name, 0, graph_node.name, 0)
 
 	for child in node.get_children():
@@ -295,8 +302,7 @@ func _remove_all_connections(graph_node: GraphNode) -> void:
 
 func _arrange_current_tree_graph() -> void:
 	# Arranges the graph nodes in the GraphEdit.
-	var node := _current_behavior_tree.get_child(0)
-	_arrange_graph_node(node)
+	_arrange_graph_node(_current_behavior_tree)
 
 
 func _arrange_graph_node(node: Node) -> void:
@@ -316,7 +322,7 @@ func _arrange_graph_node(node: Node) -> void:
 			current_node = current_node.get_child(0)
 
 		_set_graph_node_position(current_node)
-
+		
 		for child in current_node.get_children():
 			queue.append(child)
 
@@ -392,6 +398,7 @@ func _get_node_script_icon(node: Node) -> ImageTexture:
 
 func _reorder_nodes(parent: Node) -> void:
 	var child_order := parent.get_children()
+	
 	child_order.sort_custom(
 		func (a: Node, b: Node):
 			return get_graph_node(a).position_offset.x < get_graph_node(b).position_offset.x
@@ -503,14 +510,73 @@ func _on_graph_node_delete_request(graph_node: GraphNode) -> void:
 
 
 func _on_graph_node_dragged(_from: Vector2, _to: Vector2, graph_node: GraphNode) -> void:
-	var parent := get_tree_node(graph_node).get_parent()
-	var old_child_order := parent.get_children()
+	_attempt_reparent(graph_node)
 
-	_reorder_nodes(parent)
+	var root := _get_first_non_decorator_ancestor(get_tree_node(graph_node))
+	var old_child_order := root.get_children()
 
-	_store_last_graph_action("reorder_nodes", [parent, old_child_order])
-	_reorder_nodes(get_tree_node(graph_node).get_parent())
+	_store_last_graph_action("reorder_nodes", [root, old_child_order])
+	_reorder_nodes(root)
+
 	selection_updated.emit(graph_node)
+
+
+func _attempt_reparent(graph_node:GraphNode)->void:
+	for reparent_target in _get_potential_parent_nodes():
+		var reparent_target_graph_node := get_graph_node(reparent_target)
+		if reparent_target_graph_node != graph_node and not _is_child_of(get_tree_node(graph_node), reparent_target):
+			if _get_distance_between(reparent_target_graph_node, graph_node) <= REPARENT_DISTANCE:
+				_reparent_node(get_tree_node(graph_node), reparent_target)
+				return
+
+
+func _is_child_of(parent:Node, node:Node)->bool:
+	var stack := [parent]
+	
+	while stack.size() > 0:
+		for child in stack[0].get_children():
+			if child == node:
+				return true
+			stack.append(child)
+		stack.remove_at(0)
+	
+	return false
+
+
+func _get_potential_parent_nodes(from: Node = _current_behavior_tree)->Array[Node]:
+	var valid_parents : Array[Node] = []
+	
+	if from is Composite or from is BeehaveTree:
+		valid_parents.append(from)
+	
+	for node in from.get_children():
+		valid_parents.append_array(_get_potential_parent_nodes(node))
+	
+	return valid_parents
+
+
+func _reparent_node(node:Node, new_parent:Node)->void:
+	var graph_node := get_graph_node(node)
+	_graph_edit.disconnect_node(get_graph_node(_get_first_non_decorator_ancestor(node)).name, 0, graph_node.name, 0)
+	
+	node.name = _make_name_safe(node.name, new_parent)
+	print(node.name)
+	
+	_get_last_decorator_ancestor(node).reparent(new_parent)
+	
+	_graph_edit.connect_node(get_graph_node(new_parent).name, 0, graph_node.name, 0)
+	
+	_set_node_owner(node)
+	
+	# do a complete rebuild of the graph so that configuration warnings update
+	# and so does node size and placement and all that good stuff.
+	_rebuild_tree_graph()
+
+
+func _get_distance_between(a:GraphNode, b:GraphNode)->float:
+	var center_of_a := a.position_offset + a.size / 2
+	var center_of_b := b.position_offset + b.size / 2
+	return center_of_a.distance_to(center_of_b)
 
 
 func _on_graph_edit_mouse_entered() -> void:
