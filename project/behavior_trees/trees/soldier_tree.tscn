@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://duw2g25xojjyv"]
+[gd_scene load_steps=14 format=3 uid="uid://duw2g25xojjyv"]
 
 [ext_resource type="Script" path="res://addons/beehave/nodes/beehave_tree.gd" id="1_5nxr1"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_wnh83"]
@@ -6,39 +6,61 @@
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="5_6ijgf"]
 [ext_resource type="Script" path="res://behavior_trees/actions/get_target.gd" id="5_aty75"]
 [ext_resource type="Script" path="res://behavior_trees/conditions/is_target_in_range.gd" id="6_fe3s8"]
+[ext_resource type="Script" path="res://behavior_trees/conditions/is_part_of_formation.gd" id="6_llbbs"]
+[ext_resource type="Script" path="res://behavior_trees/conditions/is_too_far_from_formation.gd" id="7_anl22"]
 [ext_resource type="Script" path="res://behavior_trees/actions/set_target_position.gd" id="7_nf4e5"]
 [ext_resource type="Script" path="res://behavior_trees/actions/attack_target.gd" id="8_jnk7y"]
 [ext_resource type="Script" path="res://behavior_trees/conditions/can_attack.gd" id="8_ks5qv"]
+[ext_resource type="Script" path="res://behavior_trees/actions/move_towards_formation.gd" id="8_nvw5k"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="9_t1760"]
 
 [node name="BeehaveTree" type="Node"]
 script = ExtResource("1_5nxr1")
 
-[node name="Sequence" type="Node" parent="."]
+[node name="TreeRoot" type="Node" parent="."]
 script = ExtResource("2_wnh83")
 
-[node name="Get Target" type="Node" parent="Sequence"]
+[node name="Get Target" type="Node" parent="TreeRoot"]
 script = ExtResource("5_aty75")
 
-[node name="Has Target" type="Node" parent="Sequence"]
+[node name="Has Target" type="Node" parent="TreeRoot"]
 script = ExtResource("4_cqc33")
 
-[node name="MoveTowardTarget" type="Node" parent="Sequence"]
+[node name="MoveOrAttack" type="Node" parent="TreeRoot"]
 script = ExtResource("5_6ijgf")
 
-[node name="IsTargetInRange" type="Node" parent="Sequence/MoveTowardTarget"]
-script = ExtResource("6_fe3s8")
+[node name="MoveTowardTarget" type="Node" parent="TreeRoot/MoveOrAttack"]
+script = ExtResource("5_6ijgf")
 
-[node name="SetTargetPosition" type="Node" parent="Sequence/MoveTowardTarget"]
-script = ExtResource("7_nf4e5")
-
-[node name="Sequence" type="Node" parent="Sequence"]
+[node name="MoveTowardFormation" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget"]
 script = ExtResource("2_wnh83")
 
-[node name="IsTargetInRange" type="Node" parent="Sequence/Sequence"]
+[node name="IsPartOfFormation" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget/MoveTowardFormation"]
+script = ExtResource("6_llbbs")
+
+[node name="IsTooFarFromFormation" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget/MoveTowardFormation"]
+script = ExtResource("7_anl22")
+
+[node name="MoveTowardsFormation" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget/MoveTowardFormation"]
+script = ExtResource("8_nvw5k")
+
+[node name="MoveTowardTarget" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget"]
+script = ExtResource("2_wnh83")
+
+[node name="Inverter" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget/MoveTowardTarget"]
+script = ExtResource("9_t1760")
+
+[node name="IsTargetInRange" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget/MoveTowardTarget/Inverter"]
 script = ExtResource("6_fe3s8")
 
-[node name="CanAttack" type="Node" parent="Sequence/Sequence"]
+[node name="SetTargetPosition" type="Node" parent="TreeRoot/MoveOrAttack/MoveTowardTarget/MoveTowardTarget"]
+script = ExtResource("7_nf4e5")
+
+[node name="AttackTarget" type="Node" parent="TreeRoot/MoveOrAttack"]
+script = ExtResource("2_wnh83")
+
+[node name="CanAttack" type="Node" parent="TreeRoot/MoveOrAttack/AttackTarget"]
 script = ExtResource("8_ks5qv")
 
-[node name="AttackTarget" type="Node" parent="Sequence/Sequence"]
+[node name="AttackTarget" type="Node" parent="TreeRoot/MoveOrAttack/AttackTarget"]
 script = ExtResource("8_jnk7y")

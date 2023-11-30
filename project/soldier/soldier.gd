@@ -10,11 +10,14 @@ const ATTACK_COOLDOWN_VARIANCE_PERCENTAGE := 0.25
 @export var config : SoldierConfig
 @export var team_index := 0
 
-var target_location : Vector2
+var target_location := -Vector2.ONE
 var unit_index := -1
 var can_attack := true
 var disabled := false : set = _set_disabled
+var selected := false
+var is_in_formation : bool : get = _get_is_in_formation
 var _has_been_added_to_tree := false
+var formation_index := -1
 
 @onready var _behavior_tree : BeehaveTree = $BeehaveTree
 @onready var _attack_cooldown_timer : Timer = $AttackCooldownTimer
@@ -44,7 +47,7 @@ func _physics_process(delta:float)->void:
 
 
 func _can_move()->bool:
-	if target_location == null:
+	if target_location < Vector2.ZERO:
 		return false
 	return true
 
@@ -59,6 +62,7 @@ func _move_towards_target_location(delta:float)->void:
 	var angle := get_angle_to(target_location)
 	var motion := Vector2.RIGHT.rotated(angle) * delta * config.speed
 	move_and_collide(motion)
+	target_location = -Vector2.ONE
 
 
 func attack()->Attack:
@@ -155,3 +159,11 @@ func _set_disabled(value:bool)->void:
 	if not _has_been_added_to_tree:
 		await ready
 	_behavior_tree.enabled = not disabled
+
+
+func select()->void:
+	selected = true
+
+
+func _get_is_in_formation()->bool:
+	return _behavior_tree.blackboard.has_value(formation_index, GLOBAL_BLACKBOARD_NAME)
