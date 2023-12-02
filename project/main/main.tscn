@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://main/main.gd" id="1_yx2gc"]
 [ext_resource type="PackedScene" uid="uid://d3vl86gtvsyfr" path="res://main/soldier_placement/soldier_placement_interface.tscn" id="3_2ct6o"]
 [ext_resource type="Script" path="res://addons/beehave/blackboard.gd" id="4_6qy0m"]
-[ext_resource type="Script" path="res://selection/selection_area.gd" id="4_p358q"]
-[ext_resource type="Script" path="res://selected_menu.gd" id="5_jgcsu"]
+[ext_resource type="Script" path="res://selection/selection_manager.gd" id="4_pviit"]
+[ext_resource type="Script" path="res://selection/selection_actions.gd" id="5_id8ec"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_yx2gc")
@@ -14,20 +14,17 @@ script = ExtResource("4_6qy0m")
 
 [node name="SoldierContainer" type="Node2D" parent="."]
 
-[node name="SelectionMenuManager" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 1020.0
-offset_bottom = 598.0
-script = ExtResource("5_jgcsu")
-
 [node name="SoldierPlacementInterface" parent="." instance=ExtResource("3_2ct6o")]
 offset_right = 1024.0
 offset_bottom = 600.0
 
 [node name="SelectionManager" type="Node2D" parent="."]
-script = ExtResource("4_p358q")
+script = ExtResource("4_pviit")
 
-[connection signal="make_formation" from="SelectionMenuManager" to="." method="_on_selection_menu_manager_make_formation"]
+[node name="SelectionActions" type="Node" parent="." node_paths=PackedStringArray("_selection_manager")]
+script = ExtResource("5_id8ec")
+_selection_manager = NodePath("../SelectionManager")
+
 [connection signal="battle_started" from="SoldierPlacementInterface" to="." method="_on_soldier_placement_interface_battle_started"]
 [connection signal="soldier_instance_requested" from="SoldierPlacementInterface" to="." method="_on_soldier_placement_interface_soldier_instance_requested"]
+[connection signal="make_formation" from="SelectionActions" to="." method="_on_selection_actions_make_formation"]

@@ -23,7 +23,7 @@ func _release_selection()->void:
 	var selected_area_polygon := _get_selected_area_polygon()
 	for node in selectable_nodes:
 		if Geometry2D.is_point_in_polygon(node.global_position, selected_area_polygon):
-			node.select()
+			node.selected = true
 	queue_free()
 
 

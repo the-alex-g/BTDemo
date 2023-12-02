@@ -71,8 +71,8 @@ func _generate_frame_texture(x:int, y:int, texture:Texture2D)->AtlasTexture:
 
 func _is_frame_empty(frame_texture:Texture2D)->bool:
 	var frame_image := frame_texture.get_image()
-	for x in frame_size.x:
-		for y in frame_size.y:
+	for x in floor(frame_size.x):
+		for y in floor(frame_size.y):
 			if frame_image.get_pixel(x, y).a > 0.0:
 				return false
 	return true

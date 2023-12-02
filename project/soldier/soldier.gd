@@ -14,7 +14,7 @@ var target_location := -Vector2.ONE
 var unit_index := -1
 var can_attack := true
 var disabled := false : set = _set_disabled
-var selected := false
+var selected := false : set = _set_selected
 var is_in_formation : bool : get = _get_is_in_formation
 var _has_been_added_to_tree := false
 var formation_index := -1
@@ -99,13 +99,8 @@ func hit_with_attack(incoming_attack:Attack)->void:
 func damage(amount:int)->void:
 	config.health -= amount
 	if config.health <= 0:
-		_die()
+		queue_free()
 
-
-func _die()->void:
-	_remove_data_from_blackboard(_behavior_tree.blackboard)
-	died.emit(self)
-	queue_free()
 
 
 func _remove_data_from_blackboard(blackboard:Blackboard)->void:
@@ -161,9 +156,20 @@ func _set_disabled(value:bool)->void:
 	_behavior_tree.enabled = not disabled
 
 
-func select()->void:
-	selected = true
+func _set_selected(value:bool)->void:
+	selected = value
+	queue_redraw()
 
 
 func _get_is_in_formation()->bool:
 	return _behavior_tree.blackboard.has_value(formation_index, GLOBAL_BLACKBOARD_NAME)
+
+
+func _draw()->void:
+	if selected and disabled:
+		draw_arc(Vector2.ZERO, config.animations.frame_size.length() / 2 + 4, 0.0, TAU, 32, Color.GOLD)
+
+
+func _on_tree_exiting()->void:
+	_remove_data_from_blackboard(_behavior_tree.blackboard)
+	died.emit(self)

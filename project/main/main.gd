@@ -2,7 +2,7 @@ extends Node2D
 
 const GLOBAL_BLACKBOARD_NAME := "global"
 
-var _battle_started := false
+var _is_battle_in_progress := false
 var _team_sizes := {}
 var foo := 0
 
@@ -10,14 +10,8 @@ var foo := 0
 @onready var _blackboard : Blackboard = $Blackboard
 
 
-func _input(event:InputEvent)->void:
-	if event is InputEventMouseButton:
-		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-			_add_selection_at_mouse()
-
-
 func _on_soldier_placement_interface_soldier_instance_requested(soldier:Soldier)->void:
-	if _battle_started:
+	if _is_battle_in_progress:
 		return
 	
 	soldier.disabled = true
@@ -41,9 +35,9 @@ func _decrement_team(team:int)->void:
 
 
 func _on_soldier_placement_interface_battle_started()->void:
-	if not _battle_started:
+	if not _is_battle_in_progress:
 		_set_soldiers_disabled(false)
-		_battle_started = true
+		_is_battle_in_progress = true
 
 
 func _set_soldiers_disabled(disabled:bool)->void:
@@ -54,7 +48,8 @@ func _set_soldiers_disabled(disabled:bool)->void:
 func _on_soldier_died(soldier:Soldier)->void:
 	_decrement_team(soldier.team_index)
 	_remove_extinct_teams()
-	_check_for_battle_end()
+	if _is_battle_in_progress:
+		_check_for_battle_end()
 
 
 func _remove_extinct_teams()->void:
@@ -70,13 +65,8 @@ func _check_for_battle_end()->void:
 
 func _end_battle()->void:
 	_set_soldiers_disabled(true)
+	_is_battle_in_progress = false
 	print("Battle over! Team ", _team_sizes.keys()[0], " won!")
-
-
-func _add_selection_at_mouse()->void:
-	var selection := SelectionArea.new()
-	selection.anchor_point = get_global_mouse_position()
-	add_child(selection)
 
 
 func _make_formation(formation_nodes:Array[Node])->void:
@@ -103,5 +93,5 @@ func _on_formation_dissolved(formation:Formation)->void:
 	_blackboard.erase_value(formation.index, GLOBAL_BLACKBOARD_NAME)
 
 
-func _on_selection_menu_manager_make_formation(members:Array[Node])->void:
+func _on_selection_actions_make_formation(members:Array[Node])->void:
 	_make_formation(members)
