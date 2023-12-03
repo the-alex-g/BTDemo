@@ -30,7 +30,8 @@ func _ready()->void:
 		config = SoldierConfig.new()
 	
 	_sprite.sprite_frames = config.animations.get_sprite_frames()
-	_sprite.play("idle")
+	_sprite.scale = config.animations.scale
+	_play_animation("idle")
 	
 	_has_been_added_to_tree = true
 	
@@ -40,10 +41,14 @@ func _ready()->void:
 
 func _physics_process(delta:float)->void:
 	if disabled:
+		_play_animation("idle")
 		return
 	
 	if _can_move() and not _is_at_target():
 		_move_towards_target_location(delta)
+		_play_animation("walk")
+	else:
+		_play_animation("idle")
 
 
 func _can_move()->bool:
@@ -58,7 +63,14 @@ func _is_at_target()->bool:
 	return false
 
 
+func _play_animation(animation_name:String)->void:
+	if not _sprite.animation == "attack" or not _sprite.is_playing():
+		if _sprite.animation != animation_name:
+			_sprite.play(animation_name)
+
+
 func _move_towards_target_location(delta:float)->void:
+	_sprite.look_at(target_location)
 	var angle := get_angle_to(target_location)
 	var motion := Vector2.RIGHT.rotated(angle) * delta * config.speed
 	move_and_collide(motion)
@@ -67,6 +79,7 @@ func _move_towards_target_location(delta:float)->void:
 
 func attack()->Attack:
 	_start_attack_cooldown()
+	_play_animation("attack")
 	return _generate_attack()
 
 

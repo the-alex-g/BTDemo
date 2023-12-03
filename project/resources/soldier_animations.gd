@@ -4,10 +4,11 @@ extends Resource
 const ANIM_NAMES := [
 	"walk",
 	"idle",
-	"run",
+	"attack",
 ]
 
 @export var frame_size := Vector2(16, 16)
+@export var scale := Vector2.ONE
 @export_group("Attack")
 @export var attack_sprite_sheet : Texture2D
 @export var attack_frames_per_second := 5
@@ -38,6 +39,7 @@ func _add_animation_to_sprite_frames(animation_name:String)->void:
 	
 	_sprite_frames.add_animation(animation_name)
 	_sprite_frames.set_animation_speed(animation_name, _get_animation_speed(animation_name))
+	_sprite_frames.set_animation_loop(animation_name, _does_animation_loop(animation_name))
 	
 	var v_frames : int = floor(animation_texture.get_height() / frame_size.y)
 	var h_frames : int = floor(animation_texture.get_width() / frame_size.x)
@@ -75,4 +77,10 @@ func _is_frame_empty(frame_texture:Texture2D)->bool:
 		for y in floor(frame_size.y):
 			if frame_image.get_pixel(x, y).a > 0.0:
 				return false
+	return true
+
+
+func _does_animation_loop(animation_name)->bool:
+	if animation_name == "attack":
+		return false
 	return true
