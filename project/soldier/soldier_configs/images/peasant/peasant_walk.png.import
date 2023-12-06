@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://btlourolbg8d3"
-path="res://.godot/imported/peasant_attack.png-7f7d8c43b0124325bd7de641740757b7.ctex"
+uid="uid://dou0budoeswnb"
+path="res://.godot/imported/peasant_walk.png-f58297e48bcbc2e3fba45510f90bd061.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://soldier/soldier_configs/peasant/peasant_attack.png"
-dest_files=["res://.godot/imported/peasant_attack.png-7f7d8c43b0124325bd7de641740757b7.ctex"]
+source_file="res://soldier/soldier_configs/images/peasant/peasant_walk.png"
+dest_files=["res://.godot/imported/peasant_walk.png-f58297e48bcbc2e3fba45510f90bd061.ctex"]
 
 [params]
 

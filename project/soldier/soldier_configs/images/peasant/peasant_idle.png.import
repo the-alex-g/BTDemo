@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b4pw7h2t3o4lr"
-path="res://.godot/imported/peasant_idle.png-c8ade3452c995fa1f9e6dec5edb0f1c7.ctex"
+path="res://.godot/imported/peasant_idle.png-319aab859187562e004b1fa22b624f58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://soldier/soldier_configs/peasant/peasant_idle.png"
-dest_files=["res://.godot/imported/peasant_idle.png-c8ade3452c995fa1f9e6dec5edb0f1c7.ctex"]
+source_file="res://soldier/soldier_configs/images/peasant/peasant_idle.png"
+dest_files=["res://.godot/imported/peasant_idle.png-319aab859187562e004b1fa22b624f58.ctex"]
 
 [params]
 

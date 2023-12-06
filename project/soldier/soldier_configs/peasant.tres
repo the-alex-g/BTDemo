@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="SoldierConfig" load_steps=7 format=3 uid="uid://cwinox8phxepl"]
 
-[ext_resource type="Texture2D" uid="uid://btlourolbg8d3" path="res://soldier/soldier_configs/peasant/peasant_attack.png" id="1_x5bbg"]
-[ext_resource type="Texture2D" uid="uid://b4pw7h2t3o4lr" path="res://soldier/soldier_configs/peasant/peasant_idle.png" id="2_3qxic"]
+[ext_resource type="Texture2D" uid="uid://btlourolbg8d3" path="res://soldier/soldier_configs/images/peasant/peasant_attack.png" id="1_x5bbg"]
+[ext_resource type="Texture2D" uid="uid://b4pw7h2t3o4lr" path="res://soldier/soldier_configs/images/peasant/peasant_idle.png" id="2_3qxic"]
 [ext_resource type="Script" path="res://resources/soldier_animations.gd" id="3_e4cfp"]
-[ext_resource type="Texture2D" uid="uid://dou0budoeswnb" path="res://soldier/soldier_configs/peasant/peasant_walk.png" id="4_bluef"]
+[ext_resource type="Texture2D" uid="uid://dou0budoeswnb" path="res://soldier/soldier_configs/images/peasant/peasant_walk.png" id="4_bluef"]
 [ext_resource type="Script" path="res://resources/soldier_config.gd" id="5_wdb8b"]
 
 [sub_resource type="Resource" id="Resource_20ri4"]

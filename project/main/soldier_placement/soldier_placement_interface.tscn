@@ -44,7 +44,7 @@ text = "Start Battle"
 anchors_preset = 0
 offset_left = 20.0
 offset_top = 44.0
-offset_right = 511.0
+offset_right = 1003.0
 offset_bottom = 570.0
 
 [connection signal="pressed" from="StartBattleButton" to="." method="_on_start_battle_button_pressed"]

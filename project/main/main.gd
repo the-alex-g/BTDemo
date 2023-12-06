@@ -4,7 +4,6 @@ const GLOBAL_BLACKBOARD_NAME := "global"
 
 var _is_battle_in_progress := false
 var _team_sizes := {}
-var foo := 0
 
 @onready var _soldier_container : Node2D = $SoldierContainer
 @onready var _blackboard : Blackboard = $Blackboard
@@ -15,8 +14,7 @@ func _on_soldier_placement_interface_soldier_instance_requested(soldier:Soldier)
 		return
 	
 	soldier.disabled = true
-	soldier.team_index = foo % 2
-	foo += 1
+	soldier.team_index = 0 if soldier.position.x < 512 else 1
 	soldier.set_behavior_tree_blackboard(_blackboard)
 	soldier.died.connect(_on_soldier_died)
 	_soldier_container.add_child(soldier)

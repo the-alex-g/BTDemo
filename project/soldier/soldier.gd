@@ -181,6 +181,12 @@ func _get_is_in_formation()->bool:
 func _draw()->void:
 	if selected and disabled:
 		draw_arc(Vector2.ZERO, config.animations.frame_size.length() / 2 + 4, 0.0, TAU, 32, Color.GOLD)
+	if formation_index > -1:
+		draw_char(
+			Label.new().get_theme_default_font(),
+			Vector2.DOWN * (config.animations.frame_size.y + 10),
+			str(formation_index),
+		)
 
 
 func _on_tree_exiting()->void:
